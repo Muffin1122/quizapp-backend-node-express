@@ -14,7 +14,15 @@ exports.createQuiz = catchAsync(async (req, res, next) => {
 
 exports.getQuiz = catchAsync(async (req, res, next) => {
   const quiz = await Quiz.findById(req.params.id)
-  .populate( { path: 'questions', select: '-__v, -correctAnswer'});
+  .populate( { path: 'questions', 
+  select: '-__v, -correctAnswer'})
+  .populate({
+    path: 'discussion',
+    populate: {
+      path: 'author', 
+      select: 'name'
+    }
+  })
   if (!quiz) {
     return next(new AppError('No quiz found with that ID', 404));
   }
@@ -158,17 +166,4 @@ exports.getAnalytics = catchAsync(async (req, res) =>{
   // console.log(analytics);
   res.json({  data: analytics });
 });
-
-// exports.deleteQuiz = catchAsync(async(res, req) => {
-//   const { quizMakerId } = req.body;
-//   if (quiz.quizmaker.toString() !== quizMakerId ) {
-//     return res.json({
-//       message: 'U r not allowed to delete the quiz'
-//     });
-//   }
-//   const quiz = await Quiz.findByIdAndDelete(req.params.id);
-//   res.json({
-//     message: 'quiz deleted successfully'
-//   });
-// })
 

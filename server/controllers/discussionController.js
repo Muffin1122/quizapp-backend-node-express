@@ -1,28 +1,26 @@
 const Discussion = require('../models/discussionSchema');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const Quiz = require('../models/quizSchema');
 
 exports.createDiscussion = catchAsync(async (req, res, next) => {
   const newDiscussion = await Discussion.create(req.body);
+  const discussionId = newDiscussion._id;
+  const quizId = req.body.quiz; 
+  const quiz = await Quiz.findById(quizId);
+
+  if (!quiz) {
+    return next(new AppError('Quiz not found', 404));
+  }
+  quiz.discussion.push(discussionId);
+  await quiz.save();
   res.json({
     status: 'success',
     data: {
-      forum : newDiscussion
+      forum: newDiscussion
     }
   });
 });
-
-// exports.getAllDiscussions = catchAsync(async (req, res, next) => {
-//   const discussion = await Discussion.find();
-//   if (!discussion) {
-//     return next(new AppError('No discussion found ', 404));
-//   }
-//   res.json({
-//     data: {
-//       discussion
-//     }
-//   })
-// });
 
 exports.getAllDiscussions = catchAsync(async (req, res, next) => {
   const discussions = await Discussion.aggregate([

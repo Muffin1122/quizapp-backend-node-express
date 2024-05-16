@@ -2,7 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const userRouter = require('./server/routes/userRoutes');
+const authRouter = require('./server/routes/authRoutes');
+const userRoutes = require('./server/routes/userRoutes');
 const quizRouter = require('./server/routes/quizRoutes');
 const courseRouter = require('./server/routes/courseRoutes');
 const questionRouter = require('./server/routes/questionRoutes');
@@ -31,14 +32,13 @@ const connectDb = async () => {
 connectDb();
 
 // Routes
-app.use('/api/users', userRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRoutes);
 app.use('/api/quiz', quizRouter);
 app.use('/api/course', courseRouter);
 app.use('/api/question', questionRouter);
 app.use('/api/discussion',discussionRouter );
 app.use('/api/uploads', fileRouter);
-
-
 
   // Server Connection
 const port = process.env.PORT || 8000;
