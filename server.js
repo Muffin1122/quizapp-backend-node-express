@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const authRouter = require('./server/routes/authRoutes');
 const userRoutes = require('./server/routes/userRoutes');
@@ -10,9 +11,13 @@ const questionRouter = require('./server/routes/questionRoutes');
 const discussionRouter = require ('./server/routes/discussionRoutes');
 const fileRouter = require('./server/routes/fileRoutes');
 
+
 dotenv.config();
 // Middlewares
 const app = express();
+app.use(cors({
+  origin: "http://localhost:3000"
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 
